@@ -26,7 +26,7 @@ jobs:
     - name: Checkout build script
       uses: actions/checkout@v4
     # Prepare OpenBSD-stable VM and run build
-    - name: Prepare, build and test
+    - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.4
       with:
         usesh: true
@@ -87,6 +87,10 @@ jobs:
           echo "## repository infos"
           pwd
           ls -la
+          # Run build script for cargo-nextest
+          df -h
+          ls -l /tmp
+          du -sch /tmp
           #
           # To ensure that files are cleaned up, we don't want to exit on error
           #
