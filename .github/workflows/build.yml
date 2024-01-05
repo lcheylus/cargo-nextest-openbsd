@@ -1,8 +1,8 @@
 name: Build
 
 env:
-  # * style job configuration
-  STYLE_FAIL_ON_FAULT: true ## (bool) fail the build if a style job contains a fault (error or warning); may be overridden on a per-job basis
+  # build job configuration
+  STYLE_FAIL_ON_FAULT: true ## (bool) fail if the build job contains a fault (error or warning); may be overridden on a per-job basis
 
 on:
   # To run manually workflow
@@ -100,9 +100,9 @@ jobs:
           echo "Run build script for cargo-nextest"
           echo "##################################"
           ./build.sh
-          "echo ls -l /tmp/cargo-nextest-build-0.9.66/target/release"
+          echo "ls -l /tmp/cargo-nextest-build-0.9.66/target/release"
           ls -l /tmp/cargo-nextest-build-0.9.66/target/release
-          "echo /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -V"
+          echo "/tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -V"
           /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -V
           echo "/tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -h"
           /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -h
