@@ -44,7 +44,7 @@ jobs:
         run: |
           ## Prepare, build, and test
           # implementation modelled after ref: <https://github.com/rust-lang/rustup/pull/2783>
-          # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the mac host
+          # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
           set -e
           #
           BUILD_USER=builder
@@ -101,12 +101,12 @@ jobs:
           echo "##################################"
           ./build.sh
           ls -l /tmp
-          ls -l /tmp//tmp/cargo-nextest-build-0.9.66
-          ls -l /tmp//tmp/cargo-nextest-build-0.9.66/target/release
-          /tmp//tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -V
-          /tmp//tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -h
-          /tmp//tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest nextest self update --help
-          /tmp//tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest nextest self update
+          ls -l /tmp/cargo-nextest-build-0.9.66
+          ls -l /tmp/cargo-nextest-build-0.9.66/target/release
+          /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -V
+          /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest -h
+          /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest nextest self update --help
+          /tmp/cargo-nextest-build-0.9.66/target/release/cargo-nextest nextest self update
           #
           # To ensure that files are cleaned up, we don't want to exit on error
           #
