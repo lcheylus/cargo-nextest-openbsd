@@ -14,13 +14,14 @@ PROFILE="release"
 
 WRKDIR=/tmp/cargo-nextest-build-${VERSION}
 
+echo "WRKDIR=${WRKDIR}"
 rm -rf ${WRKDIR}
 
 # Download sources for cargo-nextest
 echo "[*] Download sources for cargo-nextest-build-${VERSION}"
 rm -rf /tmp/cargo-nextest-"${VERSION}".tar.gz
 curl -sL https://github.com/nextest-rs/nextest/archive/refs/tags/cargo-nextest-"${VERSION}".tar.gz -O --output-dir /tmp
-tar xzvf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
+tar xzf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
 mv /tmp/nextest-cargo-nextest-"${VERSION}" ${WRKDIR}
 rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 
@@ -36,7 +37,7 @@ git reset --hard 4e0bfc439
 # Download crate openssl-sys
 echo "[*] Download sources for openssl-sys-0.9.97 crate"
 cd ${WRKDIR}
-curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.97/download|tar xzvf - -C crates
+curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.97/download|tar xzf - -C crates
 
 # Patch crate openssl-sys
 echo "[*] Patch sources for openssl-sys-0.9.97 crate"
@@ -46,7 +47,7 @@ sed -i.orig -e "/ => ('.', '.'),/h" -e "/ => ('.', '.', '.'),/h" -e "/_ => versi
 # Download crate zstd-sys-2.0.9+zstd.1.5.5
 echo "[*] Download sources for zstd-sys-2.0.9+zstd.1.5.5 crate"
 cd ${WRKDIR}
-curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.9+zstd.1.5.5/download|tar xzvf - -C crates
+curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.9+zstd.1.5.5/download|tar xzf - -C crates
 
 # Patch crate zstd-sys-2.0.9+zstd.1.5.5
 echo "[*] Patch sources for zstd-sys-2.0.9+zstd.1.5.5 crate"
