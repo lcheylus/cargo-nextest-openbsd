@@ -1,0 +1,103 @@
+name: Build
+
+env:
+  # * style job configuration
+  STYLE_FAIL_ON_FAULT: true ## (bool) fail the build if a style job contains a fault (error or warning); may be overridden on a per-job basis
+
+on:
+  # To run manually workflow
+  workflow_dispatch:
+  # Run with new tag
+  # push:
+  #   tags:        
+  #     - '*'
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+jobs:
+  build:
+    name: Build cargo-nextest
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    # strategy:
+    #   fail-fast: false
+    steps:
+    # Checkout build script only
+    - name: Checkout build script
+      uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            build.sh
+          sparse-checkout-cone-mode: false
+    # Prepare OpenBSD-stable VM and run build
+    - name: Prepare, build and test
+      uses: vmactions/openbsd-vm@v1.0.4
+      with:
+        usesh: true
+        sync: rsync
+        copyback: false
+        # Install requirements to build cargo-nextest with Rust v1.72.1
+        prepare: |
+          pkg_add -I bash curl sudo-1.9.14.2
+          pkg_add -I rust zstd
+        run: |
+          ## Prepare, build, and test
+          # implementation modelled after ref: <https://github.com/rust-lang/rustup/pull/2783>
+          # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the mac host
+          set -e
+          #
+          BUILD_USER=builder
+          REPO_NAME=${GITHUB_WORKSPACE##*/}
+          WORKSPACE_PARENT="/home/runner/work/${REPO_NAME}"
+          WORKSPACE="${WORKSPACE_PARENT}/${REPO_NAME}"
+          # Generate random password for user
+          PASSWD=$(encrypt $(openssl rand -base64 12))
+          # Create user for build
+          useradd -d /root/ -g wheel -c "User to buildi cargo-nextest" -p ${PASSWD} ${BUILD_USER}
+          chown -R ${BUILD_USER}:wheel /root/ "${WORKSPACE_PARENT}"/
+          whoami
+          #
+          # Further work needs to be done in a sudo as we are changing users
+          sudo -i -u ${BUILD_USER} bash << EOF
+          set -e
+          whoami
+          # Increase the number of file descriptors - See https://github.com/rust-lang/cargo/issues/11435
+          ulimit -n 1024
+          ## VARs setup
+          cd "${WORKSPACE}"
+          unset FAIL_ON_FAULT ; case '${{ env.STYLE_FAIL_ON_FAULT }}' in
+          ''|0|f|false|n|no|off) FAULT_TYPE=warning ;;
+          *) FAIL_ON_FAULT=true ; FAULT_TYPE=error ;;
+          esac;
+          FAULT_PREFIX=\$(echo "\${FAULT_TYPE}" | tr '[:lower:]' '[:upper:]')
+          ## Info
+          # environment
+          echo "## environment"
+          echo "CI='${CI}'"
+          echo "REPO_NAME='${REPO_NAME}'"
+          echo "BUILD_USER='${BUILD_USER}'"
+          echo "WORKSPACE_PARENT='${WORKSPACE_PARENT}'"
+          echo "WORKSPACE='${WORKSPACE}'"
+          echo "FAULT_PREFIX='\${FAULT_PREFIX}'"
+          env | sort
+          # tooling info
+          echo "## tooling infos"
+          cargo -V
+          rustc -V
+          curl --version
+          echo "## packages infos"
+          pkg_info
+          # Check if build script available
+          echo "## repository infos"
+          pwd
+          ls -la
+          #
+          # To ensure that files are cleaned up, we don't want to exit on error
+          #
+          set +e
+          unset FAULT
+          # Clean to avoid to rsync back the files
+          cargo clean
+          if [ -n "\${FAIL_ON_FAULT}" ] && [ -n "\${FAULT}" ]; then exit 1 ; fi
+          EOF
