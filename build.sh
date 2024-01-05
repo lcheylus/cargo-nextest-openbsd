@@ -75,7 +75,7 @@ sed -i.orig -e 's/default = \["default-no-update", "self-update"\]/default = \[\
 # Build cargo-nextest with cargo
 echo "[*] Build cargo-nextest with profile ${PROFILE}"
 if [ "${PROFILE}" = "release" ]; then
-	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build -v --release
+	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build --release
 else
-	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build -v
+	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build
 fi
