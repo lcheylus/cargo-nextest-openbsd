@@ -39,7 +39,7 @@ jobs:
         copyback: false
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
-          pkg_add -I bash curl sudo-1.9.14.2
+          pkg_add -I bash curl git sudo-1.9.14.2
           pkg_add -I rust zstd
         run: |
           ## Prepare, build, and test
@@ -96,6 +96,9 @@ jobs:
           # ls -l /tmp
           # du -sch /tmp
           # Run build script for cargo-nextest
+          echo "##################################"
+          echo "Run build script for cargo-nextest"
+          echo "##################################"
           ./build.sh
           ls -l /tmp
           ls -l /tmp//tmp/cargo-nextest-build-0.9.66
