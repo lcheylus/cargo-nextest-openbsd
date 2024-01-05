@@ -23,13 +23,8 @@ jobs:
     # strategy:
     #   fail-fast: false
     steps:
-    # Checkout build script only
     - name: Checkout build script
       uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            build.sh
-          sparse-checkout-cone-mode: false
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare, build and test
       uses: vmactions/openbsd-vm@v1.0.4
