@@ -22,6 +22,9 @@ jobs:
     timeout-minutes: 90
     # strategy:
     #   fail-fast: false
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
     # Checkout only build script
     - name: Checkout build script
@@ -30,6 +33,9 @@ jobs:
         sparse-checkout: |
           build.sh
         sparse-checkout-cone-mode: false
+    # cache compilation results
+    - name: Run sccache-cache
+      uses: mozilla-actions/sccache-action@v0.0.3
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.4
@@ -105,3 +111,7 @@ jobs:
           cargo clean
           if [ -n "\${FAIL_ON_FAULT}" ] && [ -n "\${FAULT}" ]; then exit 1 ; fi
           EOF
+    # Get sscache stats for check
+    - name: Run sccache stat for check
+      shell: bash
+      run: ${SCCACHE_PATH} --show-stats
