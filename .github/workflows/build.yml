@@ -24,9 +24,6 @@ jobs:
     timeout-minutes: 90
     # strategy:
     #   fail-fast: false
-    # env:
-    #   SCCACHE_GHA_ENABLED: "true"
-    #   RUSTC_WRAPPER: "sccache"
     steps:
     # Checkout only build script
     - name: Checkout build script
@@ -35,20 +32,17 @@ jobs:
         sparse-checkout: |
           build.sh
         sparse-checkout-cone-mode: false
-    # cache compilation results
-    # - name: Run sccache-cache
-    #   uses: mozilla-actions/sccache-action@v0.0.3
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
-      uses: vmactions/openbsd-vm@v1.0.5
+      uses: vmactions/openbsd-vm@v1.0.6
       with:
         # envs: 'SCCACHE_GHA_ENABLED RUSTC_WRAPPER'
         usesh: true
         sync: rsync
-        copyback: false
+        copyback: true
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
-          pkg_add -I bash curl git sudo-1.9.14.2
+          pkg_add -I bash curl git
           pkg_add -I rust zstd
         run: |
           ## Prepare, build, and test
@@ -60,43 +54,35 @@ jobs:
           REPO_NAME=${GITHUB_WORKSPACE##*/}
           WORKSPACE_PARENT="/home/runner/work/${REPO_NAME}"
           WORKSPACE="${WORKSPACE_PARENT}/${REPO_NAME}"
-          # Generate random password for user
-          PASSWD=$(encrypt $(openssl rand -base64 12))
-          # Create user for build
-          useradd -d /root/ -g wheel -c "User to build cargo-nextest" -p ${PASSWD} ${BUILD_USER}
-          chown -R ${BUILD_USER}:wheel /root/ "${WORKSPACE_PARENT}"/
-          whoami
-          #
-          # Further work needs to be done in a sudo as we are changing users
-          sudo -i -u ${BUILD_USER} bash << EOF
-          set -e
+          echo "## whoami"
           whoami
           # Increase the number of file descriptors - See https://github.com/rust-lang/cargo/issues/11435
           ulimit -n 1024
           ## VARs setup
           cd "${WORKSPACE}"
-          unset FAIL_ON_FAULT ; case '${{ env.STYLE_FAIL_ON_FAULT }}' in
-          ''|0|f|false|n|no|off) FAULT_TYPE=warning ;;
-          *) FAIL_ON_FAULT=true ; FAULT_TYPE=error ;;
+          unset FAIL_ON_FAULT
+          case '${{ env.STYLE_FAIL_ON_FAULT }}' in
+          ''|0|f|false|n|no|off)
+            FAULT_TYPE=warning ;;
+          *)
+            FAIL_ON_FAULT=true ;
+            FAULT_TYPE=error ;;
           esac;
-          FAULT_PREFIX=\$(echo "\${FAULT_TYPE}" | tr '[:lower:]' '[:upper:]')
+          FAULT_PREFIX=$(echo "${FAULT_TYPE}" | tr '[:lower:]' '[:upper:]')
           ## Info
           # environment
           echo "## environment"
           echo "CI='${CI}'"
           echo "REPO_NAME='${REPO_NAME}'"
-          echo "BUILD_USER='${BUILD_USER}'"
           echo "WORKSPACE_PARENT='${WORKSPACE_PARENT}'"
           echo "WORKSPACE='${WORKSPACE}'"
-          echo "FAULT_PREFIX='\${FAULT_PREFIX}'"
+          echo "FAULT_PREFIX='${FAULT_PREFIX}'"
           echo "NEXTEST_VERSION='${{ env.NEXTEST_VERSION }}'"
           env | sort
           # tooling info
           echo "## tooling infos"
           cargo -V
           rustc -V
-          echo "## packages infos"
-          pkg_info
           ## Run build script for cargo-nextest
           echo "##################################"
           echo "Run build script for cargo-nextest"
@@ -107,13 +93,5 @@ jobs:
           echo "# /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V"
           /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V
           # TODO: create tar archive with cargo-nextest binary and copy to Ubuntu host
-          # xxx
-          #
-          # To ensure that files are cleaned up, we don't want to exit on error
-          #
-          set +e
-          unset FAULT
-          # Clean to avoid to rsync back the files
-          cargo clean
-          if [ -n "\${FAIL_ON_FAULT}" ] && [ -n "\${FAULT}" ]; then exit 1 ; fi
-          EOF
+          # tar czf 
+          
