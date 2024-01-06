@@ -1,4 +1,4 @@
-name: Build
+name: Manual Build
 
 env:
   # build job configuration
@@ -22,9 +22,9 @@ jobs:
     timeout-minutes: 90
     # strategy:
     #   fail-fast: false
-    env:
-      SCCACHE_GHA_ENABLED: "true"
-      RUSTC_WRAPPER: "sccache"
+    # env:
+    #   SCCACHE_GHA_ENABLED: "true"
+    #   RUSTC_WRAPPER: "sccache"
     steps:
     # Checkout only build script
     - name: Checkout build script
@@ -34,16 +34,16 @@ jobs:
           build.sh
         sparse-checkout-cone-mode: false
     # cache compilation results
-    - name: Run sccache-cache
-      uses: mozilla-actions/sccache-action@v0.0.3
+    # - name: Run sccache-cache
+    #   uses: mozilla-actions/sccache-action@v0.0.3
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.5
       with:
-        envs: 'SCCACHE_GHA_ENABLED RUSTC_WRAPPER'
+        # envs: 'SCCACHE_GHA_ENABLED RUSTC_WRAPPER'
         usesh: true
         sync: rsync
-        # copyback: false
+        copyback: false
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
           pkg_add -I bash curl git sudo-1.9.14.2
