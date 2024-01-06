@@ -42,7 +42,8 @@ jobs:
       with:
         envs: 'SCCACHE_GHA_ENABLED RUSTC_WRAPPER'
         usesh: true
-        sync: rsync
+        sync: sshfs
+        # sync: rsync
         # copyback: false
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
