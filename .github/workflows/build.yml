@@ -59,7 +59,6 @@ jobs:
           # Increase the number of file descriptors - See https://github.com/rust-lang/cargo/issues/11435
           ulimit -n 1024
           ## VARs setup
-          cd "${WORKSPACE}"
           unset FAIL_ON_FAULT
           case '${{ env.STYLE_FAIL_ON_FAULT }}' in
           ''|0|f|false|n|no|off)
@@ -87,11 +86,34 @@ jobs:
           echo "##################################"
           echo "Run build script for cargo-nextest"
           echo "##################################"
+          cd "${WORKSPACE}"
+          export CARGO_TERM_COLOR=always
           ./build.sh "${{ env.NEXTEST_VERSION }}"
           echo "# ls -l /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release"
           ls -l /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release
           echo "# /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V"
           /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V
-          # TODO: create tar archive with cargo-nextest binary and copy to Ubuntu host
-          # tar czf 
-          
+          ## Copy cargo-nextest binary to home => copy back to Ubuntu host
+          echo "# Copy cargo-nextest-${{ env.NEXTEST_VERSION }} to home directory"
+          cp -v /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest /home/runner/work/
+    # Run commands on Ubuntu host
+    - name: Check artifact on Ubuntu runner
+      run: |
+        sudo apt-get install -y file
+        cd /home/runner/work
+        echo "# pwd"
+        pwd
+        echo "# ls -l"
+        ls -l
+        echo "# Check cargo-nextest file"
+        file cargo-nextest
+    # Upload artifact for cargo-nextest binary
+    # - name: Upload cargo-nextest binary
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
+    #     path: cargo-nextest
+    #     if-no-files-found: error
+    #     retention-days: 0
+
+
