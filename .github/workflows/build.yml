@@ -111,7 +111,3 @@ jobs:
           cargo clean
           if [ -n "\${FAIL_ON_FAULT}" ] && [ -n "\${FAULT}" ]; then exit 1 ; fi
           EOF
-    # Get sscache stats for check
-    - name: Run sccache stat for check
-      shell: bash
-      run: ${SCCACHE_PATH} --show-stats
