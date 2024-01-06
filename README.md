@@ -10,7 +10,7 @@ xx
 
 ## How
 
-Install requirements:
+Install requirements to run build script:
 
   * Bash shell
   * Curl to download sources
@@ -22,4 +22,12 @@ Install requirements:
 $ pkg_add -v bash curl git rust zstd
 ```
 
-Build `cargo-nextest` on OpenBSD-stable (current version = 7.4) with `build.sh` script.
+Build `cargo-nextest` for an official release (`NEXTEST_VERSION`) on
+OpenBSD-stable (current version = 7.4) with `build.sh` script:
+
+```shell
+$ ./build.sh <NEXTEST_VERSION>
+```
+
+By default, build is done in `/tmp/cargo-nextest-build-<NEXTEST_VERSION>`
+directory (variable `WRKDIR` defined in `build.sh`).

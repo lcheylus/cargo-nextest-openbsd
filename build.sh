@@ -5,16 +5,25 @@
 
 set -eu
 
-# cargo-nextest version
-VERSION="0.9.66"
-
 # Rust profile for build
 # PROFILE="debug"
 PROFILE="release"
 
+# Check args to get version
+if [ $# -ne 1 ]; then
+	echo "ERROR: unable to get cargo-nextest version"
+	echo "usage: build.sh <NEXTEST_VERSION>"
+	exit 1
+fi
+
+# cargo-nextest version
+VERSION=$1
+
+echo "[*] Build cargo-nextest version ${VERSION} on OpenBSD $(uname -r)"
+
 WRKDIR=/tmp/cargo-nextest-build-${VERSION}
 
-echo "WRKDIR=${WRKDIR}"
+echo "[*] WRKDIR=${WRKDIR}"
 rm -rf ${WRKDIR}
 
 # Download sources for cargo-nextest
