@@ -40,9 +40,10 @@ jobs:
     - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.4
       with:
+        envs: 'SCCACHE_GHA_ENABLED RUSTC_WRAPPER'
         usesh: true
         sync: rsync
-        copyback: false
+        # copyback: false
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
           pkg_add -I bash curl git sudo-1.9.14.2
@@ -60,7 +61,7 @@ jobs:
           # Generate random password for user
           PASSWD=$(encrypt $(openssl rand -base64 12))
           # Create user for build
-          useradd -d /root/ -g wheel -c "User to buildi cargo-nextest" -p ${PASSWD} ${BUILD_USER}
+          useradd -d /root/ -g wheel -c "User to build cargo-nextest" -p ${PASSWD} ${BUILD_USER}
           chown -R ${BUILD_USER}:wheel /root/ "${WORKSPACE_PARENT}"/
           whoami
           #
