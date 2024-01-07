@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
+    # Set NEXTEST_VERSION in env
+    # - name: Set NEXT_VERSION env
+    #   run: echo "NEXTEST_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
     # Checkout only build script
     - name: Checkout build script
       uses: actions/checkout@v4
@@ -94,14 +97,17 @@ jobs:
         ls -l
         echo "# Check cargo-nextest file"
         file cargo-nextest
+    # Create .tar.gz archive for release
+    - name: Create archive for release
+      run: tar cvzf cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz cargo-nextest
     # Publish new release
     - name: Publish release
       uses: softprops/action-gh-release@v1
       with:
-        body: "Release for cargo-nextest ${{ env.NEXTEST_VERSION }}"
+        body: "Release for cargo-nextest ${{ env.NEXTEST_VERSION }} - See https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${{ env.NEXTEST_VERSION }}"
         draft: true
         fail_on_unmatched_files: true
-        files: cargo-nextest
+        files: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz
 
 
 
