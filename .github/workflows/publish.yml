@@ -20,7 +20,6 @@ jobs:
   build:
     name: Build cargo-nextest
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     steps:
     # Set NEXTEST_VERSION in env
     # - name: Set NEXT_VERSION env
@@ -97,10 +96,33 @@ jobs:
         ls -l
         echo "# Check cargo-nextest file"
         file cargo-nextest
-    # TODO: upload artifact
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
+        path: cargo-nextest
+        if-no-files-found: error
+        retention-days: 0
 
-    # TODO: job "publish" => download artifact
-    # Create .tar.gz archive for release
+  # Job to publish release
+  publish:
+    name: Publish release for cargo-nextest
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v4
+      with:
+        name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
+    - name: Check artifact on Ubuntu runner
+      run: |
+        sudo apt-get install -y file
+        echo "# pwd"
+        pwd
+        echo "# ls -l"
+        ls -l
+        echo "# Check cargo-nextest file"
+        file cargo-nextest
     - name: Create archive for release
       run: tar cvzf cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz cargo-nextest
     # Publish new release
@@ -112,6 +134,3 @@ jobs:
         draft: true
         fail_on_unmatched_files: true
         files: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz
-
-
-
