@@ -11,7 +11,7 @@ on:
   # Run with new tag
   # push:
   #   tags:        
-  #     - "v*.*.*"
+  #     - "*.*.*"
 
 permissions:
   contents: write
@@ -97,6 +97,9 @@ jobs:
         ls -l
         echo "# Check cargo-nextest file"
         file cargo-nextest
+    # TODO: upload artifact
+
+    # TODO: job "publish" => download artifact
     # Create .tar.gz archive for release
     - name: Create archive for release
       run: tar cvzf cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz cargo-nextest
@@ -104,6 +107,7 @@ jobs:
     - name: Publish release
       uses: softprops/action-gh-release@v1
       with:
+        name: cargo-nextest-openbsd ${{ env.NEXTEST_VERSION }} 
         body: "Release for cargo-nextest ${{ env.NEXTEST_VERSION }} - See https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${{ env.NEXTEST_VERSION }}"
         draft: true
         fail_on_unmatched_files: true
