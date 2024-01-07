@@ -7,13 +7,9 @@ env:
 on:
   # To run manually workflow
   workflow_dispatch:
-  # Run with new tag
-  # push:
-  #   tags:        
-  #     - '*'
 
 permissions:
-  contents: read # to fetch code (actions/checkout)
+  contents: read
 
 jobs:
   build:
