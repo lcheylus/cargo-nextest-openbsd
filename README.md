@@ -42,3 +42,13 @@ $ ./build.sh <NEXTEST_VERSION>
 
 By default, build is done in `/tmp/cargo-nextest-build-<NEXTEST_VERSION>`
 directory (variable `WRKDIR` defined in `build.sh`).
+
+## Prepare a release
+
+When a new release of cargo-nextest is published:
+
+1. Run `build.sh` on a local OpenBSD-stable host to check if the build is OK.
+2. Update `NEXTEST_VERSION` in "Build" workflow (`.github/workflows/build.yml`)
+   and run it manually to check if the build is OK on GitHub.
+3. Tag the repository with the new version => the workflow "Build and publish"
+   will build and publish the new release.
