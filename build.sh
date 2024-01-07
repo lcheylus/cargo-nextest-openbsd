@@ -82,6 +82,15 @@ echo "[*] Disable self-update feature in cargo-nextest/Cargo.toml"
 cd ${WRKDIR}/cargo-nextest
 sed -i.orig -e 's/default = \["default-no-update", "self-update"\]/default = \[\]/' Cargo.toml
 
+echo "[*] Patch Cargo.toml to strip binary in release profile"
+cd ${WRKDIR}
+printf "\n[profile.release]\n" > Cargo-patch.toml
+printf "strip = true  # Automatically strip symbols from the binary.\n" >> Cargo-patch.toml
+
+cat Cargo-patch.toml >> Cargo.toml
+rm -f Cargo-patch.toml
+
+cd ${WRKDIR}
 # Build cargo-nextest with cargo
 echo "[*] Build cargo-nextest with profile ${PROFILE}"
 if [ "${PROFILE}" = "release" ]; then
