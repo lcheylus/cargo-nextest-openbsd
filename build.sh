@@ -21,15 +21,24 @@ VERSION=$1
 
 echo "[*] Build cargo-nextest version ${VERSION} on OpenBSD $(uname -r)"
 
+rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
+
+# Check version and download sources for cargo-nextest
+STATUSCODE=$(curl -sL "https://github.com/nextest-rs/nextest/archive/refs/tags/cargo-nextest-"${VERSION}".tar.gz" -O --output-dir /tmp --write-out "%{http_code}")
+if test $STATUSCODE -ne 200; then
+	rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
+	echo "ERROR: non existent cargo-nextest version ${VERSION}"
+	exit 1
+fi
+
 WRKDIR=/tmp/cargo-nextest-build-${VERSION}
 
 echo "[*] WRKDIR=${WRKDIR}"
 rm -rf ${WRKDIR}
 
-# Download sources for cargo-nextest
 echo "[*] Download sources for cargo-nextest-build-${VERSION}"
-rm -rf /tmp/cargo-nextest-"${VERSION}".tar.gz
-curl -sL https://github.com/nextest-rs/nextest/archive/refs/tags/cargo-nextest-"${VERSION}".tar.gz -O --output-dir /tmp
+
+# Prepare sources for cargo-nextest
 tar xzf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
 mv /tmp/nextest-cargo-nextest-"${VERSION}" ${WRKDIR}
 rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
