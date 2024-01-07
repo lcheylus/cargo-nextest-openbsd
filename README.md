@@ -8,7 +8,7 @@ of a release synced with official release of cargo-nextest.
 ## Why
 
 For some Rust projects, regression tests are runned with `cargo-nextest` instead
-of `cargo test`. For example, [uutils/coreutils](https://github.com/uutils/coreutils) project uses
+of `cargo test`. For example, the [uutils/coreutils](https://github.com/uutils/coreutils) project uses
 cargo-nextest to run their tests in GitHub workflows.
 
 cargo-nextest releases are not available on OpenBSD (see
@@ -47,8 +47,10 @@ directory (variable `WRKDIR` defined in `build.sh`).
 
 When a new release of cargo-nextest is published:
 
-1. Run `build.sh` on a local OpenBSD-stable host to check if the build is OK.
+1. Run `build.sh` on a local OpenBSD-stable host to check if the build is OK for
+   this new version.
 2. Update `NEXTEST_VERSION` in "Build" workflow (`.github/workflows/build.yml`)
    and run it manually to check if the build is OK on GitHub.
-3. Tag the repository with the new version => the workflow "Build and publish"
-   will build and publish the new release.
+3. Tag the repository with the new version (tag = `major.minor.patch` without a
+   preceding `v`) => the workflow "Build and publish" will build and publish
+   the new release.
