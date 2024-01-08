@@ -27,9 +27,10 @@ echo "NEXTEST_VERSION='${NEXTEST_VERSION}'"
 env | sort
 
 # Tooling info
-echo "## tooling infos"
+printf "\n## tooling infos\n"
 cargo -V
 rustc -V
+echo
 
 ## Run build script for cargo-nextest
 echo "##################################"
@@ -40,7 +41,7 @@ cd "${WORKSPACE}"
 export CARGO_TERM_COLOR=always
 ./build.sh "${NEXTEST_VERSION}"
 
-echo "# ls -l /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release"
+printf "\n# ls -l /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release\n"
 ls -l /tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release
 
 echo "# /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release/cargo-nextest -V"
