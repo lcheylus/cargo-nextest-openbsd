@@ -91,6 +91,25 @@ printf "zstd-sys = { path = 'crates/zstd-sys-2.0.9+zstd.1.5.5' }\n" >> cargo_con
 cat cargo_config-patch.toml >> .cargo/config.toml
 rm -f cargo_config-patch.toml
 
+# Fix fixtures/nextest-tests/scripts/my-script.sh
+# See https://github.com/nextest-rs/nextest/commit/4a0de0ba4b706dd45b8c247a09e0ad0ec30f962e
+echo "[*] Patch fixtures/nextest-tests/scripts/my-script.sh"
+cd ${WRKDIR}/fixtures/nextest-tests/scripts/
+cat << 'EOF' > my-script.sh
+#!/bin/sh
+
+# This depends only on /bin/sh, not bash, because some platforms like OpenBSD don't have bash
+# installed by default.
+
+# If this environment variable is set, exit with non-zero.
+if [ -n "$__NEXTEST_SETUP_SCRIPT_ERROR" ]; then
+    echo "__NEXTEST_SETUP_SCRIPT_ERROR is set, exiting with 1"
+    exit 1
+fi
+
+echo MY_ENV_VAR=my-env-var >> "$NEXTEST_ENV"
+EOF
+
 # Disable self-update feature
 echo "[*] Disable self-update feature in cargo-nextest/Cargo.toml"
 cd ${WRKDIR}/cargo-nextest
