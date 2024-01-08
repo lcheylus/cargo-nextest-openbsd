@@ -31,6 +31,7 @@ jobs:
         usesh: true
         sync: rsync
         copyback: true
+        envs: 'NEXTEST_VERSION'
         # Install requirements to build cargo-nextest with Rust v1.72.1
         prepare: |
           pkg_add -I bash curl git

@@ -5,6 +5,8 @@
 
 set -e
 
+# NEXTEST_VERSION variable from GH env
+
 REPO_NAME=${GITHUB_WORKSPACE##*/}
 WORKSPACE_PARENT="/home/runner/work/${REPO_NAME}"
 WORKSPACE="${WORKSPACE_PARENT}/${REPO_NAME}"
@@ -21,7 +23,7 @@ echo "CI='${CI}'"
 echo "REPO_NAME='${REPO_NAME}'"
 echo "WORKSPACE_PARENT='${WORKSPACE_PARENT}'"
 echo "WORKSPACE='${WORKSPACE}'"
-echo "NEXTEST_VERSION='${{ env.NEXTEST_VERSION }}'"
+echo "NEXTEST_VERSION='${NEXTEST_VERSION}'"
 env | sort
 
 # Tooling info
@@ -36,14 +38,14 @@ echo "##################################"
 
 cd "${WORKSPACE}"
 export CARGO_TERM_COLOR=always
-./build.sh "${{ env.NEXTEST_VERSION }}"
+./build.sh "${NEXTEST_VERSION}"
 
-echo "# ls -l /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release"
-ls -l /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release
+echo "# ls -l /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release"
+ls -l /tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release
 
-echo "# /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V"
-/tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest -V
+echo "# /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release/cargo-nextest -V"
+/tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release/cargo-nextest -V
 
 ## Copy cargo-nextest binary to GITHUB_WORKSPACE => copy back to Ubuntu host
-echo "# Copy cargo-nextest-${{ env.NEXTEST_VERSION }} to working directory"
-cp -v /tmp/cargo-nextest-build-${{ env.NEXTEST_VERSION }}/target/release/cargo-nextest ${GITHUB_WORKSPACE}
+echo "# Copy cargo-nextest-${NEXTEST_VERSION} to working directory"
+cp -v /tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release/cargo-nextest "${GITHUB_WORKSPACE}"
