@@ -25,9 +25,14 @@ rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 
 # Check version and download sources for cargo-nextest
 STATUSCODE=$(curl -sL "https://github.com/nextest-rs/nextest/archive/refs/tags/cargo-nextest-"${VERSION}".tar.gz" -O --output-dir /tmp --write-out "%{http_code}")
-if test $STATUSCODE -ne 200; then
+if test $STATUSCODE -eq 404; then
 	rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 	echo "ERROR: non existent cargo-nextest version ${VERSION}"
+	exit 1
+fi
+
+if test $STATUSCODE -gt 400; then
+	echo "ERROR: unable to download sources for cargo-nextest - HTTP Status-Code = ${STATUSCODE}"
 	exit 1
 fi
 
