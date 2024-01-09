@@ -18,6 +18,7 @@ jobs:
     # Set NEXTEST_VERSION in env
     - name: Set NEXT_VERSION env
       run: echo "NEXTEST_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
     # Checkout only build script and script for CI
     - name: Checkout build script
       uses: actions/checkout@v4
@@ -25,6 +26,7 @@ jobs:
         sparse-checkout: |
           build.sh
           ci/openbsd_build.sh
+
     - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.6
       with:
@@ -39,6 +41,7 @@ jobs:
         # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
         # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
         run: bash ci/openbsd_build.sh
+
     # Run commands on Ubuntu host
     - name: Check artifact on Ubuntu runner
       run: |
@@ -49,6 +52,7 @@ jobs:
         ls -l
         echo "# Check cargo-nextest file"
         file cargo-nextest
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -66,10 +70,12 @@ jobs:
     # Set NEXTEST_VERSION in env
     - name: Set NEXT_VERSION env
       run: echo "NEXTEST_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
         name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
+
     - name: Check artifact on Ubuntu runner
       run: |
         sudo apt-get install -y file
@@ -79,10 +85,12 @@ jobs:
         ls -l
         echo "# Check cargo-nextest file"
         file cargo-nextest
+
     - name: Create archive for release
       run: |
         chmod +x cargo-nextest
         tar cvzf cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz cargo-nextest
+
     # Publish new release
     - name: Publish release
       uses: softprops/action-gh-release@v1
