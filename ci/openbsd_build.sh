@@ -47,7 +47,3 @@ ls -l "${WORKSPACE}"/cargo-nextest-build/target/release
 
 echo "# ${WORKSPACE}/cargo-nextest-build/target/release/cargo-nextest -V"
 "${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest -V
-
-## Copy cargo-nextest binary to GITHUB_WORKSPACE => copy back to Ubuntu host
-echo "# Copy cargo-nextest-${NEXTEST_VERSION} to working directory"
-cp -v "${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest "${GITHUB_WORKSPACE}"
