@@ -36,6 +36,7 @@ rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 # Check version and download sources for cargo-nextest
 STATUSCODE=$(curl -sL "https://github.com/nextest-rs/nextest/archive/refs/tags/cargo-nextest-${VERSION}.tar.gz" -O --output-dir /tmp --write-out "%{http_code}")
 if test "$STATUSCODE" -eq 404; then
+	rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 	echo "ERROR: non existent cargo-nextest version '${VERSION}'"
 	exit 1
 fi
@@ -79,7 +80,7 @@ echo "[*] Patch sources for zstd-sys-2.0.9+zstd.1.5.5 crate"
 cd "${WRKDIR}"/crates/zstd-sys-2.0.9+zstd.1.5.5
 rm -rf zstd
 sed -i.orig -e 's,^fn main() {,fn main() { println!("cargo:rustc-link-lib=zstd"); return;,' build.rs
-sed -i "1s/^/#![allow(unreachable_code)]\'$'\n/" build.rs
+sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
 
 # Patch cargo configuration for modified crates
 echo "[*] Patch cargo configuration in .cargo/config.toml"
