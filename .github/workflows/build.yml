@@ -24,6 +24,23 @@ jobs:
         sparse-checkout: |
           build.sh
           ci/openbsd_build.sh
+          rustc
+
+    # Check fake rustc version for OpenBSD-stable 7.4 (rustc 1.72.1)
+    # Necessary for Swatinem/rust-cache action
+    - name: Get fake rustc version for OpenBSD-stable
+      run: |
+        # Create workspace for Rust cache
+        sudo cp rustc /home/runner/.cargo/bin/rustc
+        which rustc
+        rustc -vV
+
+    # Action for Rust cache (copy to/from VM via copyback)
+    - name: Configure Rust cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        workspaces: cargo-nextest-build
+        env-vars: "RUSTFLAGS"
 
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build

@@ -38,7 +38,7 @@ echo "Run build script for cargo-nextest"
 echo "##################################"
 
 cd "${WORKSPACE}"
-mkdir cargo-nextest-build
+mkdir -p cargo-nextest-build
 export CARGO_TERM_COLOR=always
 ./build.sh "${NEXTEST_VERSION}" "${WORKSPACE}/cargo-nextest-build"
 
