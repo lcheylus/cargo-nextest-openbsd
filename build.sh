@@ -48,14 +48,7 @@ tar xzf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
 mv /tmp/nextest-cargo-nextest-"${VERSION}" ${WRKDIR}
 rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 
-# Download sources for crate libc (commit 4e0bfc439 for OpenBSD waitid)
-echo "[*] Download sources for libc crate"
-cd ${WRKDIR}
-mkdir crates
-cd crates
-git clone https://github.com/rust-lang/libc.git
-cd libc
-git reset --hard 4e0bfc439
+mkdir -p ${WRKDIR}/crates
 
 # Download crate openssl-sys
 echo "[*] Download sources for openssl-sys-0.9.97 crate"
@@ -84,36 +77,11 @@ echo "[*] Patch cargo configuration in .cargo/config.toml"
 
 cd ${WRKDIR}
 printf "\n[patch.crates-io]\n" > cargo_config-patch.toml
-printf "libc = { path = 'crates/libc' }\n" >> cargo_config-patch.toml
 printf "openssl-sys = { path = 'crates/openssl-sys-0.9.97'}\n" >> cargo_config-patch.toml
 printf "zstd-sys = { path = 'crates/zstd-sys-2.0.9+zstd.1.5.5' }\n" >> cargo_config-patch.toml
 
 cat cargo_config-patch.toml >> .cargo/config.toml
 rm -f cargo_config-patch.toml
-
-# Fix fixtures/nextest-tests/scripts/my-script.sh
-# See https://github.com/nextest-rs/nextest/commit/4a0de0ba4b706dd45b8c247a09e0ad0ec30f962e
-echo "[*] Patch fixtures/nextest-tests/scripts/my-script.sh"
-cd ${WRKDIR}/fixtures/nextest-tests/scripts/
-cat << 'EOF' > my-script.sh
-#!/bin/sh
-
-# This depends only on /bin/sh, not bash, because some platforms like OpenBSD don't have bash
-# installed by default.
-
-# If this environment variable is set, exit with non-zero.
-if [ -n "$__NEXTEST_SETUP_SCRIPT_ERROR" ]; then
-    echo "__NEXTEST_SETUP_SCRIPT_ERROR is set, exiting with 1"
-    exit 1
-fi
-
-echo MY_ENV_VAR=my-env-var >> "$NEXTEST_ENV"
-EOF
-
-# Disable self-update feature
-echo "[*] Disable self-update feature in cargo-nextest/Cargo.toml"
-cd ${WRKDIR}/cargo-nextest
-sed -i.orig -e 's/default = \["default-no-update", "self-update"\]/default = \[\]/' Cargo.toml
 
 echo "[*] Patch Cargo.toml to strip binary in release profile"
 cd ${WRKDIR}
