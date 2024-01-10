@@ -38,15 +38,16 @@ echo "Run build script for cargo-nextest"
 echo "##################################"
 
 cd "${WORKSPACE}"
+mkdir cargo-nextest-build
 export CARGO_TERM_COLOR=always
-./build.sh "${NEXTEST_VERSION}"
+./build.sh "${NEXTEST_VERSION}" "${WORKSPACE}/cargo-nextest-build"
 
-printf "\n# ls -l /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release\n"
-ls -l /tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release
+printf "\n# ls -l %s/target/release\n" "${WORKSPACE}/cargo-nextest-build"
+ls -l "${WORKSPACE}"/cargo-nextest-build/target/release
 
-echo "# /tmp/cargo-nextest-build-${NEXTEST_VERSION}/target/release/cargo-nextest -V"
-/tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release/cargo-nextest -V
+echo "# ${WORKSPACE}/cargo-nextest-build/target/release/cargo-nextest -V"
+"${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest -V
 
 ## Copy cargo-nextest binary to GITHUB_WORKSPACE => copy back to Ubuntu host
 echo "# Copy cargo-nextest-${NEXTEST_VERSION} to working directory"
-cp -v /tmp/cargo-nextest-build-"${NEXTEST_VERSION}"/target/release/cargo-nextest "${GITHUB_WORKSPACE}"
+cp -v "${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest "${GITHUB_WORKSPACE}"
