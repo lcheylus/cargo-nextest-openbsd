@@ -92,10 +92,10 @@ cat Cargo-patch.toml >> Cargo.toml
 rm -f Cargo-patch.toml
 
 cd ${WRKDIR}
-# Build cargo-nextest with cargo
+# Build cargo-nextest with cargo - self-update feature disabled
 echo "[*] Build cargo-nextest with profile ${PROFILE}"
 if [ "${PROFILE}" = "release" ]; then
-	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build --release
+	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build --release --no-default-features --features default-no-update
 else
-	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build
+	OPENSSL_NO_VENDOR=1 RUSTFLAGS=-L/usr/local/lib cargo build --no-default-features --features default-no-update
 fi
