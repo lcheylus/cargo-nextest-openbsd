@@ -55,7 +55,7 @@ echo "[*] Download sources for cargo-nextest-build-${VERSION}"
 
 # Prepare sources for cargo-nextest
 tar xzf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
-mv /tmp/nextest-cargo-nextest-"${VERSION}" "${WRKDIR}"
+cp -a /tmp/nextest-cargo-nextest-"${VERSION}"/. "${WRKDIR}"
 rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 
 mkdir -p "${WRKDIR}"/crates
@@ -85,21 +85,20 @@ sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
 # Patch cargo configuration for modified crates
 echo "[*] Patch cargo configuration in .cargo/config.toml"
 
-cd "${WRKDIR}"
-printf "\n[patch.crates-io]\n" > cargo_config-patch.toml
-printf "openssl-sys = { path = 'crates/openssl-sys-0.9.97'}\n" >> cargo_config-patch.toml
-printf "zstd-sys = { path = 'crates/zstd-sys-2.0.9+zstd.1.5.5' }\n" >> cargo_config-patch.toml
+printf "\n[patch.crates-io]\n" > /tmp/cargo_config-patch.toml
+printf "openssl-sys = { path = 'crates/openssl-sys-0.9.97'}\n" >> /tmp/cargo_config-patch.toml
+printf "zstd-sys = { path = 'crates/zstd-sys-2.0.9+zstd.1.5.5' }\n" >> /tmp/cargo_config-patch.toml
 
-cat cargo_config-patch.toml >> .cargo/config.toml
-rm -f cargo_config-patch.toml
+cat /tmp/cargo_config-patch.toml >> "${WRKDIR}"/.cargo/config.toml
+rm -f /tmp/cargo_config-patch.toml
 
 echo "[*] Patch Cargo.toml to strip binary in release profile"
-cd "${WRKDIR}"
-printf "\n[profile.release]\n" > Cargo-patch.toml
-printf "strip = true  # Automatically strip symbols from the binary.\n" >> Cargo-patch.toml
 
-cat Cargo-patch.toml >> Cargo.toml
-rm -f Cargo-patch.toml
+printf "\n[profile.release]\n" > /tmp/Cargo-patch.toml
+printf "strip = true  # Automatically strip symbols from the binary.\n" >> /tmp/Cargo-patch.toml
+
+cat /tmp/Cargo-patch.toml >> "${WRKDIR}"/Cargo.toml
+rm -f /tmp/Cargo-patch.toml
 
 cd "${WRKDIR}"
 # Build cargo-nextest with cargo - self-update feature disabled
