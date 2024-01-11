@@ -25,12 +25,11 @@ Install requirements to run build script:
 
   * Bash shell
   * Curl to download sources
-  * Git to download Rust crates
   * Rust compiler (with cargo) : version 1.72.1 on OpenBSD 7.4
   * [zstd](https://facebook.github.io/zstd/) library
 
 ```shell
-$ pkg_add -v bash curl git rust zstd
+$ pkg_add -v bash curl rust zstd
 ```
 
 Build `cargo-nextest` for an official release (`NEXTEST_VERSION`) on
