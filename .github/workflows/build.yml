@@ -26,13 +26,18 @@ jobs:
           ci/openbsd_build.sh
           rustc
 
+    # Git clone cargo-nextest for tag = NEXTEST_VERSION
+    # Necessary for Swatinem/rust-cache action
+    - name: Checkout cargo-nextest sources
+      run: git clone --depth 1 --branch cargo-nextest-${{ env.NEXTEST_VERSION }} https://github.com/nextest-rs/nextest.git ${GITHUB_WORKSPACE}/cargo-nextest-build
+
     # Check fake rustc version for OpenBSD-stable 7.4 (rustc 1.72.1)
     # Necessary for Swatinem/rust-cache action
-    - name: Get fake rustc version for OpenBSD-stable
+    - name: Set fake rustc version for OpenBSD-stable
       run: |
-        # Create workspace for Rust cache
+        sudo cp /home/runner/.cargo/bin/rustc rustc.orig
         sudo cp rustc /home/runner/.cargo/bin/rustc
-        which rustc
+        echo "## Fake rustc version for OpenBSD-stable"
         rustc -vV
 
     # Action for Rust cache (copy to/from VM via copyback)
@@ -40,7 +45,14 @@ jobs:
       uses: Swatinem/rust-cache@v2
       with:
         workspaces: cargo-nextest-build
-        env-vars: "RUSTFLAGS"
+        # env-vars: "RUSTFLAGS"
+
+    # Restore original rustc binary
+    - name: Restore rustc binary
+      run: |
+        mv rustc.orig /home/runner/.cargo/bin/rustc
+        echo "## rustc version for Ubuntu runner"
+        rustc -vV
 
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
