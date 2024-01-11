@@ -29,7 +29,7 @@ jobs:
     # Git clone cargo-nextest for tag = NEXTEST_VERSION
     # Necessary for Swatinem/rust-cache action
     - name: Checkout cargo-nextest sources
-      run: git clone --depth 1 --branch cargo-nextest-${{ env.NEXTEST_VERSION }} https://github.com/nextest-rs/nextest.git ${GITHUB_WORKSPACE}/cargo-nextest-build
+      run: git -c advice.detachedHead=false clone --depth 1 --branch cargo-nextest-${{ env.NEXTEST_VERSION }} https://github.com/nextest-rs/nextest.git ${GITHUB_WORKSPACE}/cargo-nextest-build
 
     # Check fake rustc version for OpenBSD-stable 7.4 (rustc 1.72.1)
     # Necessary for Swatinem/rust-cache action
