@@ -24,7 +24,7 @@ jobs:
         sparse-checkout: |
           build.sh
           ci/openbsd_build.sh
-          rustc
+          fake_rustc_openbsd-stable.sh
 
     # Git clone cargo-nextest for tag = NEXTEST_VERSION
     # Necessary for Swatinem/rust-cache action
@@ -36,7 +36,7 @@ jobs:
     - name: Set fake rustc version for OpenBSD-stable
       run: |
         sudo cp /home/runner/.cargo/bin/rustc rustc.orig
-        sudo cp rustc /home/runner/.cargo/bin/rustc
+        sudo cp fake_rustc_openbsd-stable.sh /home/runner/.cargo/bin/rustc
         echo "## Fake rustc version for OpenBSD-stable"
         rustc -vV
 
@@ -45,7 +45,6 @@ jobs:
       uses: Swatinem/rust-cache@v2
       with:
         workspaces: cargo-nextest-build
-        # env-vars: "RUSTFLAGS"
 
     # Restore original rustc binary
     - name: Restore rustc binary
