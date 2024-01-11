@@ -29,7 +29,7 @@ jobs:
     # Git clone cargo-nextest for tag = NEXTEST_VERSION
     # Necessary for Swatinem/rust-cache action
     - name: Checkout cargo-nextest sources
-      uses: AlexAtkinson/github-action-checkout-from-tag@0.2.0
+      uses: AlexAtkinson/github-action-checkout-from-tag@0.2.4
       with:
         repo: https://github.com/nextest-rs/nextest.git
         tag: ${{ env.NEXTEST_VERSION }}
