@@ -92,7 +92,7 @@ jobs:
 
     # Publish new release
     - name: Publish release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         name: cargo-nextest-openbsd ${{ env.NEXTEST_VERSION }}
         body: "Release for cargo-nextest ${{ env.NEXTEST_VERSION }} - See https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${{ env.NEXTEST_VERSION }}"
