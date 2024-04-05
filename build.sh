@@ -92,13 +92,9 @@ printf "zstd-sys = { path = 'crates/zstd-sys-2.0.9+zstd.1.5.5' }\n" >> /tmp/carg
 cat /tmp/cargo_config-patch.toml >> "${WRKDIR}"/.cargo/config.toml
 rm -f /tmp/cargo_config-patch.toml
 
+# Strip binary for release profile
 echo "[*] Patch Cargo.toml to strip binary in release profile"
-
-printf "\n[profile.release]\n" > /tmp/Cargo-patch.toml
-printf "strip = true  # Automatically strip symbols from the binary.\n" >> /tmp/Cargo-patch.toml
-
-cat /tmp/Cargo-patch.toml >> "${WRKDIR}"/Cargo.toml
-rm -f /tmp/Cargo-patch.toml
+sed -i.orig -e 's/strip = "none"/strip = true/' "${WRKDIR}"/Cargo.toml
 
 cd "${WRKDIR}"
 # Build cargo-nextest with cargo - self-update feature disabled
