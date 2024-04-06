@@ -31,7 +31,7 @@ jobs:
     - name: Checkout cargo-nextest sources
       run: git -c advice.detachedHead=false clone --depth 1 --branch cargo-nextest-${{ env.NEXTEST_VERSION }} https://github.com/nextest-rs/nextest.git ${GITHUB_WORKSPACE}/cargo-nextest-build
 
-    # Check fake rustc version for OpenBSD-stable 7.4 (rustc 1.72.1)
+    # Check fake rustc version for OpenBSD-stable 7.5 (rustc 1.76)
     # Necessary for Swatinem/rust-cache action
     - name: Set fake rustc version for OpenBSD-stable
       run: |
@@ -61,7 +61,7 @@ jobs:
         sync: rsync
         copyback: true
         envs: 'NEXTEST_VERSION'
-        # Install requirements to build cargo-nextest with Rust v1.72.1
+        # Install requirements to build cargo-nextest
         prepare: pkg_add -I bash curl rust zstd
         # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
         # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
