@@ -1,15 +1,15 @@
 #!/bin/sh
 #
-# Fake rustc binary to get `rust -vV` on OpenBSD-stable 7.4
+# Fake rustc binary to get `rust -vV` on OpenBSD-stable 7.5
 # Necessary for GH actions Swatinem/rust-cache
 #
 
 cat << EOF
-rustc 1.72.1 (d5c2e9c34 2023-09-13) (built from a source tarball)
+rustc 1.76.0 (07dca489a 2024-02-04) (built from a source tarball)
 binary: rustc
-commit-hash: d5c2e9c342b358556da91d61ed4133f6f50fc0c3
-commit-date: 2023-09-13
+commit-hash: 07dca489ac2d933c78d3c5158e3f43beefeb02ce
+commit-date: 2024-02-04
 host: x86_64-unknown-openbsd
-release: 1.72.1
-LLVM version: 16.0.5
+release: 1.76.0
+LLVM version: 16.0.6
 EOF
