@@ -28,8 +28,10 @@ env | sort
 
 # Tooling info
 printf "\n## tooling infos\n"
-cargo -V
-rustc -V
+echo "rust version"
+rustc -vV
+echo "cargo version"
+cargo -vV
 echo
 
 ## Run build script for cargo-nextest
