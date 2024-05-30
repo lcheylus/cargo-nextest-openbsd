@@ -28,9 +28,9 @@ env | sort
 
 # Tooling info
 printf "\n## tooling infos\n"
-echo "rust version"
+echo "### Rust version"
 rustc -vV
-echo "cargo version"
+echo "### cargo version"
 cargo -vV
 echo
 
