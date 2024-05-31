@@ -32,6 +32,8 @@ echo "### Rust version"
 rustc -vV
 echo "### cargo version"
 cargo -vV
+echo "### sccache version"
+sccache --version
 echo
 
 ## Run build script for cargo-nextest
