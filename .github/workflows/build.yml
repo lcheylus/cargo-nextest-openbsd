@@ -16,6 +16,11 @@ jobs:
     name: Build cargo-nextest
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      mem: 4096
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
+
     steps:
     # Checkout only build script and script for CI
     - name: Checkout build script
@@ -53,6 +58,10 @@ jobs:
         echo "## rustc version for Ubuntu runner"
         rustc -vV
 
+    # Use sccache for compilation cache (Rust)
+    - name: Configure sccache
+      uses: mozilla-actions/sccache-action@v0.0.4
+
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
       uses: vmactions/openbsd-vm@v1.0.8
@@ -60,9 +69,9 @@ jobs:
         usesh: true
         sync: rsync
         copyback: true
-        envs: 'NEXTEST_VERSION'
+        envs: "NEXTEST_VERSION SCCACHE_GHA_ENABLED RUSTC_WRAPPER ACTIONS_CACHE_URL ACTIONS_RUNTIME_TOKEN"
         # Install requirements to build cargo-nextest
-        prepare: pkg_add -I bash curl rust zstd
+        prepare: pkg_add -I bash curl rust zstd sccache
         # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
         # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
         run: bash ci/openbsd_build.sh
