@@ -61,13 +61,13 @@ rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 mkdir -p "${WRKDIR}"/crates
 
 # Download crate openssl-sys
-echo "[*] Download sources for openssl-sys-0.9.102 crate"
+echo "[*] Download sources for openssl-sys-0.9.103 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.102/download|tar xzf - -C crates
+curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.103/download|tar xzf - -C crates
 
 # Patch crate openssl-sys
-echo "[*] Patch sources for openssl-sys-0.9.102 crate"
-cd "${WRKDIR}"/crates/openssl-sys-0.9.102
+echo "[*] Patch sources for openssl-sys-0.9.103 crate"
+cd "${WRKDIR}"/crates/openssl-sys-0.9.103
 sed -i.orig -e "/ => ('.', '.'),/h" -e "/ => ('.', '.', '.'),/h" -e "/_ => version_error(),/{g; s/(.*) =>/_ =>/; }" build/main.rs
 
 # Download crate zstd-sys-2.0.10+zstd.1.5.6
@@ -86,7 +86,7 @@ sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
 echo "[*] Patch cargo configuration in .cargo/config.toml"
 
 printf "\n[patch.crates-io]\n" > /tmp/cargo_config-patch.toml
-printf "openssl-sys = { path = 'crates/openssl-sys-0.9.102'}\n" >> /tmp/cargo_config-patch.toml
+printf "openssl-sys = { path = 'crates/openssl-sys-0.9.103'}\n" >> /tmp/cargo_config-patch.toml
 printf "zstd-sys = { path = 'crates/zstd-sys-2.0.10+zstd.1.5.6' }\n" >> /tmp/cargo_config-patch.toml
 
 cat /tmp/cargo_config-patch.toml >> "${WRKDIR}"/.cargo/config.toml
