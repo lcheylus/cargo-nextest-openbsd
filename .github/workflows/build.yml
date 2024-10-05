@@ -2,7 +2,7 @@ name: Manual Build
 
 env:
   # cargo-nextest version to build
-  NEXTEST_VERSION: "0.9.78"
+  NEXTEST_VERSION: "0.9.79"
 
 on:
   # To run manually workflow
