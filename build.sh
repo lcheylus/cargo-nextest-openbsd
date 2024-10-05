@@ -70,14 +70,14 @@ echo "[*] Patch sources for openssl-sys-0.9.103 crate"
 cd "${WRKDIR}"/crates/openssl-sys-0.9.103
 sed -i.orig -e "/ => ('.', '.'),/h" -e "/ => ('.', '.', '.'),/h" -e "/_ => version_error(),/{g; s/(.*) =>/_ =>/; }" build/main.rs
 
-# Download crate zstd-sys-2.0.10+zstd.1.5.6
-echo "[*] Download sources for zstd-sys-2.0.10+zstd.1.5.6 crate"
+# Download crate zstd-sys-2.0.13+zstd.1.5.6
+echo "[*] Download sources for zstd-sys-2.0.13+zstd.1.5.6 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.10+zstd.1.5.6/download|tar xzf - -C crates
+curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.13+zstd.1.5.6/download|tar xzf - -C crates
 
-# Patch crate zstd-sys-2.0.10+zstd.1.5.6
-echo "[*] Patch sources for zstd-sys-2.0.10+zstd.1.5.6 crate"
-cd "${WRKDIR}"/crates/zstd-sys-2.0.10+zstd.1.5.6
+# Patch crate zstd-sys-2.0.13+zstd.1.5.6
+echo "[*] Patch sources for zstd-sys-2.0.13+zstd.1.5.6 crate"
+cd "${WRKDIR}"/crates/zstd-sys-2.0.13+zstd.1.5.6
 rm -rf zstd
 sed -i.orig -e 's,^fn main() {,fn main() { println!("cargo:rustc-link-lib=zstd"); return;,' build.rs
 sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
@@ -87,7 +87,7 @@ echo "[*] Patch cargo configuration in .cargo/config.toml"
 
 printf "\n[patch.crates-io]\n" > /tmp/cargo_config-patch.toml
 printf "openssl-sys = { path = 'crates/openssl-sys-0.9.103'}\n" >> /tmp/cargo_config-patch.toml
-printf "zstd-sys = { path = 'crates/zstd-sys-2.0.10+zstd.1.5.6' }\n" >> /tmp/cargo_config-patch.toml
+printf "zstd-sys = { path = 'crates/zstd-sys-2.0.13+zstd.1.5.6' }\n" >> /tmp/cargo_config-patch.toml
 
 cat /tmp/cargo_config-patch.toml >> "${WRKDIR}"/.cargo/config.toml
 rm -f /tmp/cargo_config-patch.toml
