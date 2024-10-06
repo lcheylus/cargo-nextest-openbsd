@@ -47,5 +47,5 @@ export CARGO_TERM_COLOR=always
 printf "\n# ls -l %s/target/release\n" "${WORKSPACE}/cargo-nextest-build"
 ls -l "${WORKSPACE}"/cargo-nextest-build/target/release
 
-echo "# ${WORKSPACE}/cargo-nextest-build/target/release/cargo-nextest -V"
-"${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest -V
+echo "# ${WORKSPACE}/cargo-nextest-build/target/release/cargo-nextest --version"
+"${WORKSPACE}"/cargo-nextest-build/target/release/cargo-nextest --version
