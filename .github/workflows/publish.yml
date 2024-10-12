@@ -28,7 +28,7 @@ jobs:
           ci/openbsd_build.sh
 
     - name: Prepare OpenBSD VM and build
-      uses: vmactions/openbsd-vm@v1.1.3
+      uses: vmactions/openbsd-vm@v1.1.4
       with:
         usesh: true
         sync: rsync
