@@ -5,11 +5,11 @@
 #
 
 cat << EOF
-rustc 1.76.0 (07dca489a 2024-02-04) (built from a source tarball)
+rustc 1.81.0 (eeb90cda1 2024-09-04) (built from a source tarball)
 binary: rustc
-commit-hash: 07dca489ac2d933c78d3c5158e3f43beefeb02ce
-commit-date: 2024-02-04
+commit-hash: eeb90cda1969383f56a2637cbd3037bdf598841c
+commit-date: 2024-09-04
 host: x86_64-unknown-openbsd
-release: 1.76.0
-LLVM version: 16.0.6
+release: 1.81.0
+LLVM version: 17.0.6
 EOF
