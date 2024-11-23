@@ -2,7 +2,7 @@
 
 [cargo-nextest](https://github.com/nextest-rs/nextest) is a next-generation test runner for Rust.
 
-Build of this tool on OpenBSD-stable (**current version = 7.5**) and publication
+Build of this tool on OpenBSD-stable (**current version = 7.6**) and publication
 of a release synced with official release of cargo-nextest.
 
 ## Why
@@ -25,7 +25,7 @@ Install requirements to run build script:
 
   * Bash shell
   * Curl to download sources
-  * Rust compiler (with cargo) : version 1.76.0 on OpenBSD 7.5
+  * Rust compiler (with cargo) : version 1.81.0 on OpenBSD 7.6
   * [zstd](https://facebook.github.io/zstd/) library
 
 ```shell
@@ -33,7 +33,7 @@ $ pkg_add -v bash curl rust zstd
 ```
 
 Build `cargo-nextest` for an official release (`NEXTEST_VERSION`) on
-OpenBSD-stable (current version = 7.5) with `build.sh` script:
+OpenBSD-stable (current version = 7.6) with `build.sh` script:
 
 ```shell
 $ ./build.sh <NEXTEST_VERSION>
