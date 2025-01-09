@@ -55,7 +55,7 @@ jobs:
 
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
-      uses: vmactions/openbsd-vm@v1.1.4
+      uses: vmactions/openbsd-vm@v1.1.6
       with:
         usesh: true
         sync: rsync
