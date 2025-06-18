@@ -55,17 +55,23 @@ jobs:
 
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
-      uses: vmactions/openbsd-vm@v1.1.8
+      uses: cross-platform-actions/action@v0.26.0
       with:
-        usesh: true
-        sync: rsync
-        copyback: true
-        envs: 'NEXTEST_VERSION'
-        # Install requirements to build cargo-nextest
-        prepare: pkg_add -I bash curl rust zstd
+        operating_system: openbsd
+        version: '7.7'
+        shell: bash
+        sync_files: true
+        environment_variables: NEXTEST_VERSION
         # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
         # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
-        run: bash ci/openbsd_build.sh
+        run: |
+          # Install requirements to build cargo-nextest
+          sudo pkg_add -I rust zstd
+          sudo hostname -c openbsd-ci
+          echo "### OS Infos ###"
+          uname -a
+          echo "################"
+          bash ci/openbsd_build.sh
 
     # Run commands on Ubuntu host
     - name: Check artifact on Ubuntu runner
