@@ -61,23 +61,23 @@ rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
 mkdir -p "${WRKDIR}"/crates
 
 # Download crate openssl-sys
-echo "[*] Download sources for openssl-sys-0.9.106 crate"
+echo "[*] Download sources for openssl-sys-0.9.109 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.106/download|tar xzf - -C crates
+curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.109/download|tar xzf - -C crates
 
 # Patch crate openssl-sys
-echo "[*] Patch sources for openssl-sys-0.9.106 crate"
-cd "${WRKDIR}"/crates/openssl-sys-0.9.106
+echo "[*] Patch sources for openssl-sys-0.9.109 crate"
+cd "${WRKDIR}"/crates/openssl-sys-0.9.109
 sed -i.orig -e "/ => ('.', '.'),/h" -e "/ => ('.', '.', '.'),/h" -e "/_ => version_error(),/{g; s/(.*) =>/_ =>/; }" build/main.rs
 
-# Download crate zstd-sys-2.0.14+zstd.1.5.7
-echo "[*] Download sources for zstd-sys-2.0.14+zstd.1.5.7 crate"
+# Download crate zstd-sys-2.0.15+zstd.1.5.7
+echo "[*] Download sources for zstd-sys-2.0.15+zstd.1.5.7 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.14+zstd.1.5.7/download|tar xzf - -C crates
+curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.15+zstd.1.5.7/download|tar xzf - -C crates
 
 # Patch crate zstd-sys-2.0.14+zstd.1.5.7
-echo "[*] Patch sources for zstd-sys-2.0.14+zstd.1.5.7 crate"
-cd "${WRKDIR}"/crates/zstd-sys-2.0.14+zstd.1.5.7
+echo "[*] Patch sources for zstd-sys-2.0.15+zstd.1.5.7"
+cd "${WRKDIR}"/crates/zstd-sys-2.0.15+zstd.1.5.7
 rm -rf zstd
 sed -i.orig -e 's,^fn main() {,fn main() { println!("cargo:rustc-link-lib=zstd"); return;,' build.rs
 sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
@@ -86,8 +86,8 @@ sed -i '1s/^/#![allow(unreachable_code)]\'$'\n/' build.rs
 echo "[*] Patch cargo configuration in .cargo/config.toml"
 
 printf "\n[patch.crates-io]\n" > /tmp/cargo_config-patch.toml
-printf "openssl-sys = { path = 'crates/openssl-sys-0.9.106'}\n" >> /tmp/cargo_config-patch.toml
-printf "zstd-sys = { path = 'crates/zstd-sys-2.0.14+zstd.1.5.7' }\n" >> /tmp/cargo_config-patch.toml
+printf "openssl-sys = { path = 'crates/openssl-sys-0.9.109'}\n" >> /tmp/cargo_config-patch.toml
+printf "zstd-sys = { path = 'crates/zstd-sys-2.0.15+zstd.1.5.7' }\n" >> /tmp/cargo_config-patch.toml
 
 cat /tmp/cargo_config-patch.toml >> "${WRKDIR}"/.cargo/config.toml
 rm -f /tmp/cargo_config-patch.toml
