@@ -67,7 +67,7 @@ jobs:
         run: |
           # Install requirements to build cargo-nextest
           sudo pkg_add -I rust zstd
-          sudo hostname -c openbsd-ci
+          sudo hostname -s openbsd-ci
           echo "### OS Infos ###"
           uname -a
           echo "################"
