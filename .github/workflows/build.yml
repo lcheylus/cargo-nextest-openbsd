@@ -86,7 +86,7 @@ jobs:
 
     # Upload artifact for cargo-nextest binary
     - name: Upload cargo-nextest binary
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
         # Wildcard used to flatten directory hierarchy
