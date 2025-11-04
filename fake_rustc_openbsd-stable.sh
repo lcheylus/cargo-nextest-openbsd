@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Fake rustc binary to get `rust -vV` on OpenBSD-stable 7.7
+# Fake rustc binary to get `rust -vV` on OpenBSD-stable 7.8
 # Necessary for GH actions Swatinem/rust-cache
 #
 
