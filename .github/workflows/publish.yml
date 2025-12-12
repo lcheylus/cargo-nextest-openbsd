@@ -58,7 +58,7 @@ jobs:
         file cargo-nextest-build/target/release/cargo-nextest
 
     - name: Upload artifact from build job
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
         # Wildcard used to flatten directory hierarchy
