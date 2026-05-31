@@ -34,10 +34,10 @@ jobs:
         operating_system: openbsd
         version: '7.9'
         sync_files: true
+        environment_variables: NEXTEST_VERSION
 
     - name: Build on OpenBSD
       shell: cpa.sh {0}
-      environment_variables: NEXTEST_VERSION
       # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
       # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
       run: |
