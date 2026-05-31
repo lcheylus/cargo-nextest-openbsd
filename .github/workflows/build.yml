@@ -25,11 +25,6 @@ jobs:
           build.sh
           ci/openbsd_build.sh
 
-    # Git clone cargo-nextest for tag = NEXTEST_VERSION
-    # Necessary for Swatinem/rust-cache action
-    - name: Checkout cargo-nextest sources
-      run: git -c advice.detachedHead=false clone --depth 1 --branch cargo-nextest-${{ env.NEXTEST_VERSION }} https://github.com/nextest-rs/nextest.git ${GITHUB_WORKSPACE}/cargo-nextest-build
-
     # Prepare OpenBSD-stable VM and run build
     - name: Start OpenBSD VM
       uses: cross-platform-actions/action@be3d7e9ff5c8770b9c51b1a8c8c5446e1cad7cf9  #v1.2.0
