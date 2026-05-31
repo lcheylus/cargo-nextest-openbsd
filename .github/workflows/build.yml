@@ -19,7 +19,7 @@ jobs:
     steps:
     # Checkout only build script and script for CI
     - name: Checkout build script
-      uses: actions/checkout@v6
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  #v6.0.2
       with:
         sparse-checkout: |
           build.sh
@@ -42,7 +42,7 @@ jobs:
 
     # Action for Rust cache (copy to/from VM via copyback)
     - name: Configure Rust cache
-      uses: Swatinem/rust-cache@v2
+      uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4  #v2.9.1
       with:
         workspaces: cargo-nextest-build
 
@@ -55,7 +55,7 @@ jobs:
 
     # Prepare OpenBSD-stable VM and run build
     - name: Prepare OpenBSD VM and build
-      uses: cross-platform-actions/action@v1.2.0
+      uses: cross-platform-actions/action@be3d7e9ff5c8770b9c51b1a8c8c5446e1cad7cf9  #v1.2.0
       with:
         operating_system: openbsd
         version: '7.8'
@@ -86,7 +86,7 @@ jobs:
 
     # Upload artifact for cargo-nextest binary
     - name: Upload cargo-nextest binary
-      uses: actions/upload-artifact@v7
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  #v7.0.1
       with:
         name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
         # Wildcard used to flatten directory hierarchy
