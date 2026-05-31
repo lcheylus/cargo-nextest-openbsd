@@ -9,6 +9,9 @@ set -eu
 # PROFILE="debug"
 PROFILE="release"
 
+# User-Agent needed to download Rust crates via API
+USER_AGENT="Build script for cargo-nextest (see https://github.com/lcheylus/cargo-nextest-openbsd)"
+
 usage() {
 	echo "usage: build.sh NEXTEST_VERSION [WRKDIR]"
 	printf "\n  - NEXTEST_VERSION\tversion of cargo-nextest to build\n"
@@ -54,6 +57,7 @@ echo "[*] WRKDIR=${WRKDIR}"
 echo "[*] Download sources for cargo-nextest-build-${VERSION}"
 
 # Prepare sources for cargo-nextest
+rm -rf "${WRKDIR}"
 tar xzf /tmp/cargo-nextest-"${VERSION}".tar.gz -C /tmp
 cp -a /tmp/nextest-cargo-nextest-"${VERSION}"/. "${WRKDIR}"
 rm -f /tmp/cargo-nextest-"${VERSION}".tar.gz
@@ -63,7 +67,7 @@ mkdir -p "${WRKDIR}"/crates
 # Download crate openssl-sys
 echo "[*] Download sources for openssl-sys-0.9.109 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/openssl-sys/0.9.109/download|tar xzf - -C crates
+curl -A "${USER_AGENT}" -sL https://crates.io/api/v1/crates/openssl-sys/0.9.115/download|tar xzf - -C crates
 
 # Patch crate openssl-sys
 echo "[*] Patch sources for openssl-sys-0.9.109 crate"
@@ -73,7 +77,7 @@ sed -i.orig -e "/ => ('.', '.'),/h" -e "/ => ('.', '.', '.'),/h" -e "/_ => versi
 # Download crate zstd-sys-2.0.15+zstd.1.5.7
 echo "[*] Download sources for zstd-sys-2.0.15+zstd.1.5.7 crate"
 cd "${WRKDIR}"
-curl -sL https://crates.io/api/v1/crates/zstd-sys/2.0.15+zstd.1.5.7/download|tar xzf - -C crates
+curl -A "${USER_AGENT}" -sL https://crates.io/api/v1/crates/zstd-sys/2.0.15+zstd.1.5.7/download|tar xzf - -C crates
 
 # Patch crate zstd-sys-2.0.14+zstd.1.5.7
 echo "[*] Patch sources for zstd-sys-2.0.15+zstd.1.5.7"
