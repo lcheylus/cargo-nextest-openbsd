@@ -54,24 +54,31 @@ jobs:
         rustc -vV
 
     # Prepare OpenBSD-stable VM and run build
-    - name: Prepare OpenBSD VM and build
+    - name: Start OpenBSD VM
       uses: cross-platform-actions/action@be3d7e9ff5c8770b9c51b1a8c8c5446e1cad7cf9  #v1.2.0
       with:
         operating_system: openbsd
         version: '7.9'
-        shell: bash
         sync_files: true
-        environment_variables: NEXTEST_VERSION
-        # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
-        # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
-        run: |
-          # Install requirements to build cargo-nextest
-          sudo pkg_add -I rust zstd
-          sudo hostname -s openbsd-ci
-          echo "### OS Infos ###"
-          uname -a
-          echo "################"
-          bash ci/openbsd_build.sh
+
+    - name: Build on OpenBSD
+      shell: cpa.sh {0}
+      environment_variables: NEXTEST_VERSION
+      # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
+      # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
+      run: |
+        # Install requirements to build cargo-nextest
+        echo "::group::Install requirements"
+        sudo pkg_add -I rust zstd
+        sudo hostname -s openbsd-ci
+        echo "::endgroup::"
+        echo "::group::OS Infos"
+        uname -a
+        rustc -vV
+        echo "::endgroup::"
+        echo "::group::Build cargo-nextest"
+        bash ci/openbsd_build.sh
+        echo "::endgroup::"
 
     # Run commands on Ubuntu host
     - name: Check artifact on Ubuntu runner
