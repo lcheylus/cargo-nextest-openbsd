@@ -7,8 +7,12 @@ on:
     tags:
       - "*.*.*"
 
-permissions:
-  contents: write
+# Prevents concurrent runs of the workflow
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
   build:
@@ -17,7 +21,7 @@ jobs:
     steps:
     # Set NEXTEST_VERSION in env
     - name: Set NEXT_VERSION env
-      run: echo "NEXTEST_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      run: echo "NEXTEST_VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
 
     # Checkout only build script and script for CI
     - name: Checkout build script
@@ -26,13 +30,14 @@ jobs:
         sparse-checkout: |
           build.sh
           ci/openbsd_build.sh
+        persist-credentials: false
 
     # Prepare OpenBSD-stable VM and run build
     - name: Start OpenBSD VM
       uses: cross-platform-actions/action@24ef01df165c76df1ed2b9f9e9212e78dc2fc963  # v1.4.0
       with:
         operating_system: openbsd
-        version: '7.9'
+        version: 7.9
         sync_files: true
         environment_variables: NEXTEST_VERSION
 
@@ -79,10 +84,13 @@ jobs:
     name: Publish release for cargo-nextest
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to publish release
+
     steps:
     # Set NEXTEST_VERSION in env
     - name: Set NEXT_VERSION env
-      run: echo "NEXTEST_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+      run: echo "NEXTEST_VERSION=${GITHUB_REF_NAME}" >> $GITHUB_ENV
 
     - name: Download artifact from build job
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  #v8.0.1
@@ -102,7 +110,7 @@ jobs:
     - name: Create archive for release
       run: |
         chmod +x cargo-nextest
-        tar cvzf cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd.tar.gz cargo-nextest
+        tar cvzf cargo-nextest-${NEXTEST_VERSION}-openbsd.tar.gz cargo-nextest
 
     # Publish new release
     - name: Publish release
