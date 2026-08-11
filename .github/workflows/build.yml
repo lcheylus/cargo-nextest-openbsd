@@ -8,6 +8,11 @@ on:
   # To run manually workflow
   workflow_dispatch:
 
+# Prevents concurrent runs of the workflow
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -24,6 +29,7 @@ jobs:
         sparse-checkout: |
           build.sh
           ci/openbsd_build.sh
+        persist-credentials: false
 
     # Prepare OpenBSD-stable VM and run build
     - name: Start OpenBSD VM
@@ -71,4 +77,4 @@ jobs:
         # Wildcard used to flatten directory hierarchy
         path: cargo-nextest-build/target/release/*-nextest
         if-no-files-found: error
-        retention-days: 0
+        retention-days: 30
