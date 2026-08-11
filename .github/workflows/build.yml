@@ -2,7 +2,7 @@ name: Manual Build
 
 env:
   # cargo-nextest version to build
-  NEXTEST_VERSION: "0.9.140"
+  NEXTEST_VERSION: 0.9.140
 
 on:
   # To run manually workflow
@@ -36,7 +36,7 @@ jobs:
       uses: cross-platform-actions/action@24ef01df165c76df1ed2b9f9e9212e78dc2fc963  # v1.4.0
       with:
         operating_system: openbsd
-        version: '7.9'
+        version: 7.9
         sync_files: true
         environment_variables: NEXTEST_VERSION
 
