@@ -37,7 +37,7 @@ jobs:
       uses: cross-platform-actions/action@82668f1fbd89d9c99487604f822cbf6716f124d3  # v1.7.0
       with:
         operating_system: openbsd
-        version: 8.0
+        version: '8.0'
         sync_files: true
         environment_variables: NEXTEST_VERSION
 
