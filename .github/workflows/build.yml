@@ -1,12 +1,13 @@
 name: Manual Build
 
-env:
-  # cargo-nextest version to build
-  NEXTEST_VERSION: 0.9.150
-
 on:
   # To run manually workflow
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build'
+        required: true
+        type: string
 
 # Prevents concurrent runs of the workflow
 concurrency:
@@ -17,7 +18,24 @@ permissions:
   contents: read
 
 jobs:
+  validate-version:
+    name: Validate version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate version format
+        run: |
+          VERSION="${INPUTS_VERSION}"
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Error: Version must be in format 1.2.3"
+            exit 1
+          else
+            echo "Build cargo-nextest version ${INPUTS_VERSION}"
+          fi
+        env:
+          INPUTS_VERSION: ${{ inputs.version }}
+
   build:
+    needs: validate-version
     name: Build cargo-nextest
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -34,6 +52,8 @@ jobs:
     # Prepare OpenBSD-stable VM and run build
     - name: Start OpenBSD VM
       uses: cross-platform-actions/action@82668f1fbd89d9c99487604f822cbf6716f124d3  # v1.7.0
+      env:
+        NEXTEST_VERSION: ${{ inputs.version }}
       with:
         operating_system: openbsd
         version: '8.0'
@@ -73,7 +93,7 @@ jobs:
     - name: Upload cargo-nextest binary
       uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
       with:
-        name: cargo-nextest-${{ env.NEXTEST_VERSION }}-openbsd
+        name: cargo-nextest-${{ inputs.version }}-openbsd
         # Wildcard used to flatten directory hierarchy
         path: cargo-nextest-build/target/release/*-nextest
         if-no-files-found: error
