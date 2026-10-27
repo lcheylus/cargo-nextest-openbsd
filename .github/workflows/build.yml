@@ -97,3 +97,10 @@ jobs:
         path: cargo-nextest-build/target/release/*-nextest
         if-no-files-found: error
         retention-days: 30
+
+    - name: Generate summary
+      run: |
+        echo "## Manual build for cargo-nextest on OpenBSD" >> $GITHUB_STEP_SUMMARY
+        echo "Build for [cargo-nextest version ${INPUTS_VERSION}](https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${INPUTS_VERSION})" >> $GITHUB_STEP_SUMMARY
+      env:
+        INPUTS_VERSION: ${{ inputs.version }}
