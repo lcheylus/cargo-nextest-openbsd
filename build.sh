@@ -11,7 +11,7 @@ PROFILE="release"
 
 # Versions for modified crates
 OPENSSL_SYS="0.9.116"
-ZSTD_SYS="2.0.15+zstd.1.5.7"
+ZSTD_SYS="2.1.0+zstd.1.5.7"
 
 # User-Agent needed to download Rust crates via API
 USER_AGENT="Build script for cargo-nextest (see https://github.com/lcheylus/cargo-nextest-openbsd)"
