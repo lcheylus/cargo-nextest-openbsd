@@ -52,16 +52,15 @@ jobs:
     # Prepare OpenBSD-stable VM and run build
     - name: Start OpenBSD VM
       uses: cross-platform-actions/action@82668f1fbd89d9c99487604f822cbf6716f124d3  # v1.7.0
-      env:
-        NEXTEST_VERSION: ${{ inputs.version }}
       with:
         operating_system: openbsd
         version: '8.0'
         sync_files: true
-        environment_variables: NEXTEST_VERSION
 
     - name: Build on OpenBSD
-      shell: cpa.sh {0}
+      shell: cpa.sh {0} --environment-variables NEXTEST_VERSION
+      env:
+        NEXTEST_VERSION: ${{ inputs.version }}
       # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
       # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
       run: |
