@@ -73,8 +73,8 @@ jobs:
         uname -a
         rustc -vV
         # Set env variables for OS version and Rust version
-        echo "OS_VERSION='$(uname -r)'" >> "$GITHUB_ENV"
-        echo "RUST_VERSION='$(rustc -V | cut -d' ' -f2)'" >> "$GITHUB_ENV"
+        echo "OS_VERSION=$(uname -r)" >> "$GITHUB_ENV"
+        echo "RUST_VERSION=$(rustc -V | cut -d' ' -f2)" >> "$GITHUB_ENV"
         echo "::endgroup::"
         echo "::group::Build cargo-nextest"
         bash ci/openbsd_build.sh
