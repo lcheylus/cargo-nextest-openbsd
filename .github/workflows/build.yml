@@ -72,6 +72,9 @@ jobs:
         echo "::group::OS Infos"
         uname -a
         rustc -vV
+        # Set env variables for OS version and Rust version
+        echo "OS_VERSION='$(uname -r)'" >> "$GITHUB_ENV"
+        echo "RUST_VERSION='$(rustc -V | cut -d' ' -f2)'" >> "$GITHUB_ENV"
         echo "::endgroup::"
         echo "::group::Build cargo-nextest"
         bash ci/openbsd_build.sh
@@ -100,7 +103,7 @@ jobs:
 
     - name: Generate summary
       run: |
-        echo "## Manual build for cargo-nextest on OpenBSD" >> $GITHUB_STEP_SUMMARY
-        echo "Build for [cargo-nextest version ${INPUTS_VERSION}](https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${INPUTS_VERSION})" >> $GITHUB_STEP_SUMMARY
+        echo "## Manual build for cargo-nextest on OpenBSD ${OS_VERSION}" >> $GITHUB_STEP_SUMMARY
+        echo "Build for [cargo-nextest version ${INPUTS_VERSION}](https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${INPUTS_VERSION}) with Rust ${RUST_VERSION}" >> $GITHUB_STEP_SUMMARY
       env:
         INPUTS_VERSION: ${{ inputs.version }}
