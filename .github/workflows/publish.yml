@@ -18,6 +18,10 @@ jobs:
   build:
     name: Build cargo-nextest
     runs-on: ubuntu-latest
+    outputs:
+      os_version: ${{ steps.build-openbsd.outputs.os_version }}
+      rust_version: ${{ steps.build-openbsd.outputs.rust_version }}
+
     steps:
     # Set NEXTEST_VERSION in env
     - name: Set NEXT_VERSION env
@@ -42,6 +46,7 @@ jobs:
         environment_variables: NEXTEST_VERSION
 
     - name: Build on OpenBSD
+      id: build-openbsd
       shell: cpa.sh {0}
       # implementation modelled from https://github.com/rust-lang/rustup/blob/master/.github/workflows/ci.yaml
       # * NOTE: All steps need to be run in this block, otherwise, we are operating back on the Ubuntu host
@@ -55,8 +60,8 @@ jobs:
         uname -a
         rustc -vV
         # Set env variables for OS version and Rust version
-        echo "OS_VERSION=$(uname -r)" >> "$GITHUB_ENV"
-        echo "RUST_VERSION=$(rustc -V | cut -d' ' -f2)" >> "$GITHUB_ENV"
+        echo "os_version=$(uname -r)" >> $GITHUB_OUTPUT
+        echo "rust_version=$(rustc -V | cut -d' ' -f2)" >> $GITHUB_OUTPUT
         echo "::endgroup::"
         echo "::group::Build cargo-nextest"
         bash ci/openbsd_build.sh
@@ -127,5 +132,5 @@ jobs:
 
     - name: Generate summary
       run: |
-        echo "## Publish release for cargo-nextest ${{ env.NEXTEST_VERSION }} on OpenBSD ${OS_VERSION}" >> $GITHUB_STEP_SUMMARY
-        echo "Build for [cargo-nextest version ${{ env.NEXTEST_VERSION }}](https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${{ env.NEXTEST_VERSION }}) with Rust ${RUST_VERSION}" >> $GITHUB_STEP_SUMMARY
+        echo "## Publish release for cargo-nextest ${{ env.NEXTEST_VERSION }} on OpenBSD ${{ needs.build.outputs.os_version }}" >> $GITHUB_STEP_SUMMARY
+        echo "Build for [cargo-nextest version ${{ env.NEXTEST_VERSION }}](https://github.com/nextest-rs/nextest/releases/tag/cargo-nextest-${{ env.NEXTEST_VERSION }}) with Rust ${{ needs.build.outputs.rust_version }}" >> $GITHUB_STEP_SUMMARY
