@@ -46,10 +46,12 @@ directory (variable `WRKDIR` defined in `build.sh`).
 
 When a new release of cargo-nextest is published:
 
-1. Run `build.sh` on a local OpenBSD-stable host to check if the build is OK for
-   this new version.
-2. Update `NEXTEST_VERSION` in "Build" workflow (`.github/workflows/build.yml`)
-   and run it manually to check if the build is OK on GitHub.
-3. Tag the repository with the new version (tag = `major.minor.patch` without a
+1. For a new release, check version for `openssl-sys` and `zstd-sys` crate in
+   `Cargo.lock` file. If needed, updated them in `build.sh` script.
+2. (Optional) Run `build.sh` on a local OpenBSD-stable host to check if the
+   build is OK for this new version.
+3. Run "Manual Build" workflow (`.github/workflows/build.yml`) with new version
+   as input.
+4. Tag the repository with the new version (tag = `major.minor.patch` without a
    preceding `v`) => the workflow "Build and publish" will build and publish
    the new release.
